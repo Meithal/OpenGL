@@ -6,8 +6,8 @@
 #include <GLUT/glut.h>
 #include <SOIL/SOIL.h>
 
-#include "Camera.h"
-#include "Map.h"
+#include "Camera.hpp"
+#include "Map.hpp"
 
 
 // Objet Camera
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100,100);
     glutInitWindowSize(320,320);
-    glutCreateWindow("Impl�mentation :: Textures");
+    glutCreateWindow("Implementation :: Textures");
 
     /** FONCTIONS GLUT **/
     glutDisplayFunc(renderScene);

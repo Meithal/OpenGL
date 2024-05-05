@@ -18,6 +18,7 @@ add_library(
     tp/SOIL/src/SOIL.c
 )
 target_include_directories(soil_lib PUBLIC tp/SOIL/include)
+target_link_libraries(soil_lib OpenGL::GL GLUT::GLUT)
 
 add_executable(quat
     main.cpp
@@ -31,16 +32,20 @@ add_executable(soil
 )
 
 target_link_libraries(soil soil_lib)
-target_link_libraries(soil_lib OpenGL::GL GLUT::GLUT)
 
 add_executable(cours_soil
     exemples_SOIL/main.cpp
     exemples_SOIL/Camera.cpp
     exemples_SOIL/Map.cpp
     exemples_SOIL/Block.cpp
+    exemples_SOIL/include/Block.hpp
+    exemples_SOIL/include/Camera.hpp
+    exemples_SOIL/include/Map.hpp
+    exemples_SOIL/include/Skybox.hpp
 )
 target_link_libraries(cours_soil soil_lib)
 target_include_directories(cours_soil PRIVATE exemples_SOIL/include)
 
-target_link_libraries(soil soil_lib)
-
+add_custom_target(copy-runtime-files ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/exemples_SOIL/img ${CMAKE_BINARY_DIR}/img
+    DEPENDS cours_soil)

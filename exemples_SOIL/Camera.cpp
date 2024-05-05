@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "Camera.hpp"
 #include <math.h>
 
 
@@ -74,7 +74,7 @@ void Camera::orienterCam(int x, int y)
         if (deltaAngley + anglev < -M_PI_2)
             deltaAngley = -M_PI_2 - anglev + 0.01f;
 
-        // Mis à jour de la caméra
+        // Mis ï¿½ jour de la camï¿½ra
         dirx = sin(angleh + deltaAnglex)*cos(anglev + deltaAngley);
         diry = -sin(anglev + deltaAngley);
         dirz = -cos(angleh + deltaAnglex)*cos(anglev + deltaAngley);
