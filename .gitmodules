@@ -1,0 +1,3 @@
+[submodule "tp/SOIL"]
+	path = tp/SOIL
+	url = https://github.com/littlstar/soil.git
