@@ -44,7 +44,7 @@ class Block
     protected:
 
     private:
-        GLuint textures[7];
+        GLuint textures[8];
         char anchor[3];
 };
 
