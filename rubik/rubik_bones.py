@@ -31,22 +31,29 @@ class View3DPanel:
 
 ### Operators
 
-def main_turn(context, x, y, z, angle):
+def main_turn(context, slice, angle):
 
     print("pose mode?", is_pose_mode_active())
     
     bpy.ops.object.mode_set(mode='OBJECT')
     
-    o1 = context.scene.objects["Cube.002"]
-    o2 = context.scene.objects["Cube.027"]
-    o3 = context.scene.objects["Cube.004"]
-    o4 = context.scene.objects["Cube.020"]
-    o5 = context.scene.objects["Cube.012"]
-    o6 = context.scene.objects["Cube.011"]
-    o7 = context.scene.objects["Cube.010"]
-    o8 = context.scene.objects["Cube.019"]
+    print(slice)
+    slice = slice.reshape(9,)
+    root = slice[9//2]
+    print(root)
+    slice = np.delete(slice, 9//2)
+    print(slice)
     
-    root = context.scene.objects["Cube.001"]
+    o1 = context.scene.objects["Cube."+slice[0]]
+    o2 = context.scene.objects["Cube."+slice[0]]
+    o3 = context.scene.objects["Cube."+slice[0]]
+    o4 = context.scene.objects["Cube."+slice[0]]
+    o5 = context.scene.objects["Cube."+slice[0]]
+    o6 = context.scene.objects["Cube."+slice[0]]
+    o7 = context.scene.objects["Cube."+slice[0]]
+    o8 = context.scene.objects["Cube."+slice[0]]
+    
+    root = context.scene.objects["Cube."+root]
 
     for o in (o1, o2, o3, o4, o5, o6, o7, o8):
         o.parent = root
@@ -54,7 +61,7 @@ def main_turn(context, x, y, z, angle):
     bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
     
     #context.active_pose_bone.rotation_mode = 'XYZ'
-    rotation_increment = math.radians(90)
+    rotation_increment = math.radians(angle)
 
     #selected_bone.rotation_euler.y += rotation_increment
     root.rotation_euler.y += rotation_increment
@@ -76,6 +83,21 @@ class BaseRubikCubeRotator:
     """Faire tourner le rubik cube"""
     bl_idname = "object.rubik_cube_rotator"
     
+    cubes = np.array((
+        "004", "027", "002",
+        "020", "001", "019",
+        "012", "011", "010",
+        "026", "025", "024",
+        "018", "017", "016",
+        "009", "008", "007",
+        "023", "022", "021",
+        "015", "014", "013",
+        "006", "005", "003"
+    ))
+    print(cubes)
+    cubes = cubes.reshape(3, 3, 3)
+    print(cubes)
+    
     
     @classmethod
     def poll(cls, context):
@@ -92,22 +114,36 @@ class RubikCubeRotatorRedLeft(bpy.types.Operator, BaseRubikCubeRotator):
     bl_label = "Red ↰"
     bl_idname = BaseRubikCubeRotator.bl_idname + "_red_left"
 
+    def execute(self, context):
+        main_turn(context, self.cubes[2, :, :], -90)
+        return {'FINISHED'}
     
 class RubikCubeRotatorRedRight(bpy.types.Operator, BaseRubikCubeRotator):
 
     bl_label = "Red ↱"
     bl_idname = BaseRubikCubeRotator.bl_idname + "_red_right"
 
+    def execute(self, context):
+        main_turn(context, self.cubes[2, :, :], 90)
+        return {'FINISHED'}
+
 class RubikCubeRotatorYellowLeft(bpy.types.Operator, BaseRubikCubeRotator):
 
     bl_label = "Yellow ↰"
     bl_idname = BaseRubikCubeRotator.bl_idname + "_yellow_left"
+    
+    def execute(self, context):
+        main_turn(context, self.cubes[:, :, 0], -90)
+        return {'FINISHED'}
     
 class RubikCubeRotatorYellowRight(bpy.types.Operator, BaseRubikCubeRotator):
 
     bl_label = "Yellow ↱"
     bl_idname = BaseRubikCubeRotator.bl_idname + "_yellow_right"
 
+    def execute(self, context):
+        main_turn(context, self.cubes[:, :, 0], 90)
+        return {'FINISHED'}
 
 ### Panel
 class RotateCubePanel(View3DPanel, bpy.types.Panel):
