@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
+set(CMAKE_CXX_STANDARD 14)
 
 add_compile_definitions(GL_SILENCE_DEPRECATION)
 
@@ -49,3 +50,10 @@ target_include_directories(cours_soil PRIVATE exemples_SOIL/include)
 add_custom_target(copy-runtime-files ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/exemples_SOIL/img ${CMAKE_BINARY_DIR}/img
     DEPENDS cours_soil)
+
+add_executable(tests_quats
+    exemples_SOIL/tests.cpp
+    exemples_SOIL/include/Quaternion.hpp
+    exemples_SOIL/Quaternion.cpp
+)
+target_include_directories(tests_quats PRIVATE exemples_SOIL/include)

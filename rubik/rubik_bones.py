@@ -4,6 +4,7 @@ import math
 import bpy
 import numpy as np
 
+import pdb
 
 
 #bpy.types.RenderSettings.use_lock_interface = True
@@ -31,11 +32,13 @@ class View3DPanel:
 
 ### Operators
 
-def main_turn(context, slice, angle):
+def main_turn(context, slice, angle, rotaxis):
 
     print("pose mode?", is_pose_mode_active())
     
     bpy.ops.object.mode_set(mode='OBJECT')
+
+    #pdb.set_trace()
     
     print(slice)
     slice = slice.reshape(9,)
@@ -45,27 +48,30 @@ def main_turn(context, slice, angle):
     print(slice)
     
     o1 = context.scene.objects["Cube."+slice[0]]
-    o2 = context.scene.objects["Cube."+slice[0]]
-    o3 = context.scene.objects["Cube."+slice[0]]
-    o4 = context.scene.objects["Cube."+slice[0]]
-    o5 = context.scene.objects["Cube."+slice[0]]
-    o6 = context.scene.objects["Cube."+slice[0]]
-    o7 = context.scene.objects["Cube."+slice[0]]
-    o8 = context.scene.objects["Cube."+slice[0]]
+    o2 = context.scene.objects["Cube."+slice[1]]
+    o3 = context.scene.objects["Cube."+slice[2]]
+    o4 = context.scene.objects["Cube."+slice[3]]
+    o5 = context.scene.objects["Cube."+slice[4]]
+    o6 = context.scene.objects["Cube."+slice[5]]
+    o7 = context.scene.objects["Cube."+slice[6]]
+    o8 = context.scene.objects["Cube."+slice[7]]
     
     root = context.scene.objects["Cube."+root]
 
     for o in (o1, o2, o3, o4, o5, o6, o7, o8):
         o.parent = root
     
-    bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
+    #bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
     
     #context.active_pose_bone.rotation_mode = 'XYZ'
     rotation_increment = math.radians(angle)
-
+    breakpoint()
+    #root.rotation_euler.y += rotation_increment
     #selected_bone.rotation_euler.y += rotation_increment
-    root.rotation_euler.y += rotation_increment
+    ax = getattr(root.rotation_euler, rotaxis)
+    ax += rotation_increment
     
+    bpy.ops.object.select_all(action='DESELECT')
     
     for o in (o1, o2, o3, o4, o5, o6, o7, o8, root):
         o.select_set(True)
@@ -76,8 +82,8 @@ def main_turn(context, slice, angle):
         
     #bpy.ops.object.parent_clear(type='CLEAR')
     
-    for o in context.scene.objects:
-        o.select_set(False)
+    #for o in context.scene.objects:
+    #    o.select_set(False)
     
 class BaseRubikCubeRotator:
     """Faire tourner le rubik cube"""
@@ -94,6 +100,7 @@ class BaseRubikCubeRotator:
         "015", "014", "013",
         "006", "005", "003"
     ))
+    
     print(cubes)
     cubes = cubes.reshape(3, 3, 3)
     print(cubes)
@@ -115,7 +122,7 @@ class RubikCubeRotatorRedLeft(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_red_left"
 
     def execute(self, context):
-        main_turn(context, self.cubes[2, :, :], -90)
+        main_turn(context, self.cubes[2, :, :], -45, "y")
         return {'FINISHED'}
     
 class RubikCubeRotatorRedRight(bpy.types.Operator, BaseRubikCubeRotator):
@@ -124,7 +131,7 @@ class RubikCubeRotatorRedRight(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_red_right"
 
     def execute(self, context):
-        main_turn(context, self.cubes[2, :, :], 90)
+        main_turn(context, self.cubes[2, :, :], 45, "y")
         return {'FINISHED'}
 
 class RubikCubeRotatorYellowLeft(bpy.types.Operator, BaseRubikCubeRotator):
@@ -133,7 +140,7 @@ class RubikCubeRotatorYellowLeft(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_yellow_left"
     
     def execute(self, context):
-        main_turn(context, self.cubes[:, :, 0], -90)
+        main_turn(context, self.cubes[:, :, 0], -90, "x")
         return {'FINISHED'}
     
 class RubikCubeRotatorYellowRight(bpy.types.Operator, BaseRubikCubeRotator):
@@ -142,7 +149,25 @@ class RubikCubeRotatorYellowRight(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_yellow_right"
 
     def execute(self, context):
-        main_turn(context, self.cubes[:, :, 0], 90)
+        main_turn(context, self.cubes[:, :, 0], 90, "x")
+        return {'FINISHED'}
+
+class RubikCubeRotatorOrangeLeft(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "Orange ↰"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_orange_left"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[0, :, :], -90, "y")
+        return {'FINISHED'}
+
+class RubikCubeRotatorOrangeRight(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "Orange ↱"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_orange_right"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[0, :, :], 90, "y")
         return {'FINISHED'}
 
 ### Panel
@@ -174,8 +199,8 @@ class RotateCubePanel(View3DPanel, bpy.types.Panel):
         row.operator("object.rubik_cube_rotator_yellow_left")
         row.operator("object.rubik_cube_rotator_yellow_right")
         row = layout.row()
-        row.operator("object.rubik_cube_rotator_red_left")
-        row.operator("object.rubik_cube_rotator_red_left")
+        row.operator("object.rubik_cube_rotator_orange_left")
+        row.operator("object.rubik_cube_rotator_orange_right")
         row = layout.row()
         row.operator("object.rubik_cube_rotator_red_left")
         row.operator("object.rubik_cube_rotator_red_left")
@@ -200,6 +225,8 @@ def register():
     bpy.utils.register_class(RubikCubeRotatorRedRight)
     bpy.utils.register_class(RubikCubeRotatorYellowLeft)
     bpy.utils.register_class(RubikCubeRotatorYellowRight)
+    bpy.utils.register_class(RubikCubeRotatorOrangeLeft)
+    bpy.utils.register_class(RubikCubeRotatorOrangeRight)
     bpy.utils.register_class(RotateCubePanel)
 
 def unregister():
