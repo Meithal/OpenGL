@@ -1,4 +1,5 @@
 #include <array>
+#include <cmath>
 
 #include "Quaternion.hpp"
 
@@ -43,4 +44,26 @@ Quaternion::operator const char* ()
 Quaternion Quaternion::operator-() const
 {
     return q{reel, -imi, -imj, -imk};
+}
+
+double Quaternion::operator+() const
+{
+    return sqrt(reel * reel +  imi * imi + imj * imj + imk * imk);
+}
+
+bool Quaternion::operator==(double d) {
+    return +(*this) == d;
+}
+
+Quaternion operator*(const Quaternion& q1, const double d) {
+    return Quaternion{
+        q1.reel * d, 
+        q1.imi * d, 
+        q1.imj * d, 
+        q1.imk * d
+    };
+}
+
+double operator%(const Quaternion& q1, const Quaternion& q2) {
+    return q1.reel * q2.reel + q1.imi * q2.imi + q1.imj * q2.imj +  q1.imk * q2.imk;
 }

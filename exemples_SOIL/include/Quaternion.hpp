@@ -27,6 +27,10 @@ typedef struct Quaternion {
     friend Quaternion operator*(const Quaternion& q1, const Quaternion& q2);
     operator const char* ();
     Quaternion operator-() const;    // conjugué
-    static const Quaternion un;
+    static const Quaternion un;      // unitaire
+    double operator+() const;    // norme
+    bool operator==(double d);      // egalite scalaire
+    friend Quaternion operator*(const Quaternion& q1, double d); // produit avec un scalaire
+    friend double operator%(const Quaternion& q1, const Quaternion& q2); // produit scalaire
 } q;
 
