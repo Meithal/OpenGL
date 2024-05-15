@@ -73,3 +73,14 @@ double operator%(const Quaternion& q1, const Quaternion& q2) {
         q1.imk * q2.imk
     };
 }
+
+// a tester
+Quaternion cross(const Quaternion& q1, const Quaternion& q2)
+{
+    return q{
+        q1.imi * q2.imj - q1.imj * q2.imi,
+        q1.imj * q2.imk - q1.imk * q2.imj,
+        q1.imk * q2.reel - q1.reel * q2.imk,
+        q1.reel * q2.imi - q1.imi * q2.reel
+    };
+}

@@ -32,5 +32,6 @@ typedef struct Quaternion {
     bool operator==(double d);      // egalite scalaire
     friend Quaternion operator*(const Quaternion& q1, double d); // produit avec un scalaire
     friend double operator%(const Quaternion& q1, const Quaternion& q2); // produit scalaire
+    friend Quaternion cross(const Quaternion& q1, const Quaternion& q2);
 } q;
 

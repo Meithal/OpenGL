@@ -34,6 +34,13 @@ int main()
 
     assert(+q1 == 1);
     assert(+q2 == 20);
+    assert((+q{3, 0, 0, 0} == 3));
+    assert((+q{0, 3, 0, 0} == 3));
+    assert((+q{0, 0, 3, 0} == 3));
+    assert((+q{0, 0, 0, 3} == 3));
+    assert((+q{3, 4, 0, 0} == 5));
+    assert((+q{0, 4, 3, 0} == 5));
+    assert((+q{0, 0, 3, 4} == 5));
     printf("%lf\n", +q3);
 
     puts("ici");
@@ -59,7 +66,7 @@ int main()
     );
 
     assert(+q3 == +-q3);        // || q || = || _q ||
-    assert((+(q3 % q4) == +q3 * +q4));
+    assert((+(q3 * q4) == +q3 * +q4));
     puts("tests ok");
 
 }
