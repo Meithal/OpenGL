@@ -91,6 +91,8 @@ typedef struct QuatA {
 
     void operator*=(const QuatA& q);
 
+    friend QuatA operator%(const QuatA&q, const QuatA&q2);
+
     float magnitude() const;
     QuatA normalize() const;
     Vector3 toEuler() const;

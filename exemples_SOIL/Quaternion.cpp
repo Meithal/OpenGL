@@ -22,7 +22,7 @@ bool Quaternion::operator==(const Quaternion& q1) {
 
 bool Quaternion::operator==(const std::array<double, 4>& a) {
     return reel == a[0] && imi == a[1] &&
-        imj == a[0] && imk == a[3];
+        imj == a[2] && imk == a[3];
 }
 
 Quaternion operator*(const Quaternion& q1, const Quaternion& q2) {
@@ -34,21 +34,21 @@ Quaternion operator*(const Quaternion& q1, const Quaternion& q2) {
     };
 }
 
-Quaternion::operator const char* ()
+Quaternion::operator const char* ()     // representation dans puts, printf...
 {
     sprintf(str_buf, "%10.2f %10.2f %10.2f %10.2f", reel, imi, imj, imk);
     
     return str_buf;
 }
 
-Quaternion Quaternion::operator-() const
+Quaternion Quaternion::operator-() const    // conjugue
 {
     return q{reel, -imi, -imj, -imk};
 }
 
-double Quaternion::operator+() const
+double Quaternion::operator+() const    // magnitude
 {
-    return sqrt(reel * reel +  imi * imi + imj * imj + imk * imk);
+    return sqrt(reel * reel + imi * imi + imj * imj + imk * imk);
 }
 
 bool Quaternion::operator==(double d) {
@@ -64,6 +64,12 @@ Quaternion operator*(const Quaternion& q1, const double d) {
     };
 }
 
+/// Produit croise entre deux quaternions
 double operator%(const Quaternion& q1, const Quaternion& q2) {
-    return q1.reel * q2.reel + q1.imi * q2.imi + q1.imj * q2.imj +  q1.imk * q2.imk;
+    return {
+        q1.reel * q2.reel+
+        q1.imi * q2.imi+
+        q1.imj * q2.imj+
+        q1.imk * q2.imk
+    };
 }

@@ -47,16 +47,18 @@ int main()
 
     assert((+(q3 * 2) == +q3 * 2));    // |a| * ||q|| = || a * q ||
 
-    printf(
-        "prod %lf %lf %lf %lf\n", 
-        +(q3 * q4), +q3 * +q4, +(q3 % q4), +q3 * +q4
-    );
-
     auto q1a = qa{1., 0., 0., 0.};
     auto q2a = qa{0., 20., 0., 0.};
     auto q3a = qa{1., 3., -4., 2.5};
     auto q4a = qa{1./3, 3., -4., 2.5};
     //assert(q3a.do);
+
+    printf(
+        "prod %lf %lf %lf %lf %lf\n", 
+        +(q3 * q4), +q3 * +q4, +(q3 % q4), q3a * q4a, q3a % q4a
+    );
+
+    assert(+q3 == +-q3);        // || q || = || _q ||
     assert((+(q3 % q4) == +q3 * +q4));
     puts("tests ok");
 

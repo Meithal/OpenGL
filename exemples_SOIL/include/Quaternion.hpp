@@ -5,7 +5,7 @@
  *      | 
  *      |___ i
  *     /
- *    / k    main droite, ijk, pouce index, majeur
+ *    / k    main droite, ijk, pouce index, majeur - ou index, majeur pouce
 **/
 
 /** 
