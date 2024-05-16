@@ -1,3 +1,6 @@
 # third-party modules
 tp
 .DS_Store
+.idea
+cmake-build*
+.vscode

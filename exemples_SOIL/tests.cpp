@@ -5,12 +5,14 @@
 #include "Quaternion.hpp"
 #include "Transform.hpp"
 
-int main()
+
+static auto q1 = q{1., 0., 0., 0.};
+static auto q2 = q{0., 20., 0., 0.};
+static auto q3 = q{1., 3., -4., 2.5};
+static auto q4 = q{1./3, 3., -4., 2.5};
+
+void test_vec()
 {
-    auto q1 = q{1., 0., 0., 0.};
-    auto q2 = q{0., 20., 0., 0.};
-    auto q3 = q{1., 3., -4., 2.5};
-    auto q4 = q{1./3, 3., -4., 2.5};
 
     assert((q1 + q2 == q{1., 20., 0., 0.}));
     assert((q1 - q2 == q{1., -20., 0., 0.}));
@@ -94,7 +96,25 @@ int main()
 
     assert(eq(1 / (q3 * q4), (1 / q4) * (1 / q3))); // (q × q′)−1 = q′−1 × q−1
 
+    puts("tests vec ok");
+}
 
-    puts("tests ok");
 
+void test_mat()
+{
+    //assert((M{q3} == M{{1,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2}}));
+//    puts(M{{1, 2,0,0,0,}});
+//    puts(M{{0, 1, 2, 5, 6}});
+//    puts(M{{1, 2, 0,0,1}} + M{{0, 1, 2,0,0}});
+    assert((M{{1,2,0,0,0}} + M{{0,1,2,0,0,0}} == M{{1,3,2, 0, 0}}));
+
+    assert((M{q3} == mr * q3.reel + mi * q3.imi + mj * q3.imj + mk * q3.imk));
+
+    puts("tests mac ok");
+}
+
+int main()
+{
+    test_vec();
+    test_mat();
 }

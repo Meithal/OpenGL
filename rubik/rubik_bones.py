@@ -6,8 +6,14 @@ import numpy as np
 
 import pdb
 
+bl_info = {
+    "name": "Rubiks Cube",
+    "blender": (2, 80, 0),
+    "category": "Object",
+}
 
 #bpy.types.RenderSettings.use_lock_interface = True
+in_rot = False
 
 # Check if the active object is in Pose Mode
 def is_pose_mode_active():
@@ -30,9 +36,17 @@ class View3DPanel:
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
 
+def ShowMessageBox(message = "", title = "Message Box", icon = 'INFO'):
+
+    def draw(self, context):
+        self.layout.label(text=message)
+
+    bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
+
 ### Operators
 
 def main_turn(context, slice, angle, rotaxis):
+    rotidx = ["x", "y", "z"].index(rotaxis)
 
     print("pose mode?", is_pose_mode_active())
     
@@ -58,26 +72,32 @@ def main_turn(context, slice, angle, rotaxis):
     
     root = context.scene.objects["Cube."+root]
 
-    for o in (o1, o2, o3, o4, o5, o6, o7, o8):
-        o.parent = root
+    #for o in (o1, o2, o3, o4, o5, o6, o7, o8):
+    #    o.parent = root
     
     #bpy.ops.object.parent_set(type='OBJECT', keep_transform=False)
     
     #context.active_pose_bone.rotation_mode = 'XYZ'
     rotation_increment = math.radians(angle)
-    breakpoint()
+    #breakpoint()
     #root.rotation_euler.y += rotation_increment
     #selected_bone.rotation_euler.y += rotation_increment
-    ax = getattr(root.rotation_euler, rotaxis)
-    ax += rotation_increment
+    #return
+    #root.rotation_euler[rotidx] += rotation_increment
+    #return
+    #ax = getattr(root.rotation_euler, rotaxis)
+    #ax += rotation_increment
     
+    #return
     bpy.ops.object.select_all(action='DESELECT')
+    
     
     for o in (o1, o2, o3, o4, o5, o6, o7, o8, root):
         o.select_set(True)
         #o.matrix_world = o.matrix_world @ o.matrix_world.inverted()
+        o.rotation_euler[rotidx] += rotation_increment
         bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
-        bpy.ops.object.parent_clear(type='CLEAR')
+        #bpy.ops.object.parent_clear(type='CLEAR')
         o.select_set(False)
         
     #bpy.ops.object.parent_clear(type='CLEAR')
@@ -101,8 +121,11 @@ class BaseRubikCubeRotator:
         "006", "005", "003"
     ))
     
+    win_cubes = np.copy(cubes)
+    
     print(cubes)
     cubes = cubes.reshape(3, 3, 3)
+    win_cubes = np.copy(cubes)
     print(cubes)
     
     
@@ -112,8 +135,10 @@ class BaseRubikCubeRotator:
         return context.active_bone is not None
     
     
-    def execute(self, context):
-        main_turn(context)
+    def check_win(self):
+        #main_turn(context)
+        if np.array_equal(self.win_cubes, self.cubes):
+            ShowMessageBox("Bravo") 
         return {'FINISHED'}
     
 class RubikCubeRotatorRedLeft(bpy.types.Operator, BaseRubikCubeRotator):
@@ -122,7 +147,9 @@ class RubikCubeRotatorRedLeft(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_red_left"
 
     def execute(self, context):
-        main_turn(context, self.cubes[2, :, :], -45, "y")
+        main_turn(context, self.cubes[2, :, :], -90, "y")
+        self.cubes[2, :, :] = np.rot90(self.cubes[2, :, :], -1)
+        super().check_win()
         return {'FINISHED'}
     
 class RubikCubeRotatorRedRight(bpy.types.Operator, BaseRubikCubeRotator):
@@ -131,7 +158,9 @@ class RubikCubeRotatorRedRight(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_red_right"
 
     def execute(self, context):
-        main_turn(context, self.cubes[2, :, :], 45, "y")
+        main_turn(context, self.cubes[2, :, :], 90, "y")
+        self.cubes[2, :, :] = np.rot90(self.cubes[2, :, :], 1)
+        super().check_win()
         return {'FINISHED'}
 
 class RubikCubeRotatorYellowLeft(bpy.types.Operator, BaseRubikCubeRotator):
@@ -140,7 +169,9 @@ class RubikCubeRotatorYellowLeft(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_yellow_left"
     
     def execute(self, context):
-        main_turn(context, self.cubes[:, :, 0], -90, "x")
+        main_turn(context, self.cubes[:, :, 0], 90, "x")
+        self.cubes[:, :, 0] = np.rot90(self.cubes[:, :, 0], 1)
+        super().check_win()
         return {'FINISHED'}
     
 class RubikCubeRotatorYellowRight(bpy.types.Operator, BaseRubikCubeRotator):
@@ -149,7 +180,9 @@ class RubikCubeRotatorYellowRight(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_yellow_right"
 
     def execute(self, context):
-        main_turn(context, self.cubes[:, :, 0], 90, "x")
+        main_turn(context, self.cubes[:, :, 0], -90, "x")
+        self.cubes[:, :, 0] = np.rot90(self.cubes[:, :, 0], -1)
+        super().check_win()
         return {'FINISHED'}
 
 class RubikCubeRotatorOrangeLeft(bpy.types.Operator, BaseRubikCubeRotator):
@@ -158,7 +191,9 @@ class RubikCubeRotatorOrangeLeft(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_orange_left"
 
     def execute(self, context):
-        main_turn(context, self.cubes[0, :, :], -90, "y")
+        main_turn(context, self.cubes[0, :, :], 90, "y")
+        self.cubes[0, :, :] = np.rot90(self.cubes[0, :, :], 1)
+        super().check_win()
         return {'FINISHED'}
 
 class RubikCubeRotatorOrangeRight(bpy.types.Operator, BaseRubikCubeRotator):
@@ -167,7 +202,78 @@ class RubikCubeRotatorOrangeRight(bpy.types.Operator, BaseRubikCubeRotator):
     bl_idname = BaseRubikCubeRotator.bl_idname + "_orange_right"
 
     def execute(self, context):
-        main_turn(context, self.cubes[0, :, :], 90, "y")
+        main_turn(context, self.cubes[0, :, :], -90, "y")
+        self.cubes[0, :, :] = np.rot90(self.cubes[0, :, :], -1)
+        super().check_win()
+        return {'FINISHED'}
+
+
+class RubikCubeRotatorWhiteLeft(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "White ↰"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_white_left"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[:, :, 2], -90, "x")
+        self.cubes[:, :, 2] = np.rot90(self.cubes[:, :, 2], -1)
+        super().check_win()
+        return {'FINISHED'}
+
+class RubikCubeRotatorWhiteRight(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "White ↱"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_white_right"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[:, :, 2], 90, "x")
+        self.cubes[:, :, 2] = np.rot90(self.cubes[:, :, 2], 1)
+        super().check_win()
+        return {'FINISHED'}
+
+
+class RubikCubeRotatorBlueLeft(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "Blue ↰"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_blue_left"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[:, 0, :], 90, "z")
+        self.cubes[:, 0, :] = np.rot90(self.cubes[:, 0, :], 1)
+        super().check_win()
+        return {'FINISHED'}
+
+class RubikCubeRotatorBlueRight(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "Blue ↱"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_blue_right"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[:, 0, :], -90, "z")
+        self.cubes[:, 0, :] = np.rot90(self.cubes[:, 0, :], -1)
+        super().check_win()
+        return {'FINISHED'}
+
+class RubikCubeRotatorGreenLeft(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "Green ↰"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_green_left"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[:, 2, :], -90, "z")
+        self.cubes[:, 2, :] = np.rot90(self.cubes[:, 2, :], -1)
+        super().check_win()
+        return {'FINISHED'}
+
+class RubikCubeRotatorGreenRight(bpy.types.Operator, BaseRubikCubeRotator):
+
+    bl_label = "Green ↱"
+    bl_idname = BaseRubikCubeRotator.bl_idname + "_green_right"
+
+    def execute(self, context):
+        main_turn(context, self.cubes[:, 2, :], 90, "z")
+        
+        self.cubes[:, 2, :] = np.rot90(self.cubes[:, 2, :], 1)
+        super().check_win()
         return {'FINISHED'}
 
 ### Panel
@@ -202,8 +308,14 @@ class RotateCubePanel(View3DPanel, bpy.types.Panel):
         row.operator("object.rubik_cube_rotator_orange_left")
         row.operator("object.rubik_cube_rotator_orange_right")
         row = layout.row()
-        row.operator("object.rubik_cube_rotator_red_left")
-        row.operator("object.rubik_cube_rotator_red_left")
+        row.operator("object.rubik_cube_rotator_white_left")
+        row.operator("object.rubik_cube_rotator_white_right")
+        row = layout.row()
+        row.operator("object.rubik_cube_rotator_blue_left")
+        row.operator("object.rubik_cube_rotator_blue_right")
+        row = layout.row()
+        row.operator("object.rubik_cube_rotator_green_left")
+        row.operator("object.rubik_cube_rotator_green_right")
 
 
 def bone_move_callback(scene):
@@ -227,6 +339,12 @@ def register():
     bpy.utils.register_class(RubikCubeRotatorYellowRight)
     bpy.utils.register_class(RubikCubeRotatorOrangeLeft)
     bpy.utils.register_class(RubikCubeRotatorOrangeRight)
+    bpy.utils.register_class(RubikCubeRotatorWhiteLeft)
+    bpy.utils.register_class(RubikCubeRotatorWhiteRight)
+    bpy.utils.register_class(RubikCubeRotatorBlueLeft)
+    bpy.utils.register_class(RubikCubeRotatorBlueRight)
+    bpy.utils.register_class(RubikCubeRotatorGreenLeft)
+    bpy.utils.register_class(RubikCubeRotatorGreenRight)
     bpy.utils.register_class(RotateCubePanel)
 
 def unregister():
@@ -237,6 +355,18 @@ def unregister():
     bpy.utils.unregister_class(RubikCubeRotatorYellowLeft)
     bpy.utils.unregister_class(RubikCubeRotatorRedRight)
     bpy.utils.unregister_class(RubikCubeRotatorRedLeft)
+    
+    bpy.utils.register_class(RubikCubeRotatorOrangeLeft)
+    bpy.utils.register_class(RubikCubeRotatorOrangeRight)
+    bpy.utils.register_class(RubikCubeRotatorWhiteLeft)
+    bpy.utils.register_class(RubikCubeRotatorWhiteRight)
+    
+    bpy.utils.register_class(RubikCubeRotatorBlueLeft)
+    bpy.utils.register_class(RubikCubeRotatorBlueRight)
+    
+    
+    bpy.utils.register_class(RubikCubeRotatorGreenLeft)
+    bpy.utils.register_class(RubikCubeRotatorGreenRight)
     
 if __name__ == "__main__":
     register()
