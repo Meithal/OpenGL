@@ -41,18 +41,19 @@ typedef const struct Quaternion {
     double scalaire() const;
     friend Quaternion operator/(const Quaternion& q1, const Quaternion& q2);
     Quaternion unitaire();
+    //Quaternion(MatriceRot);
 } q;
 
 // verifie l'egalité de deux doubles avant l'epsilon
 bool eq(double a, double b);
 bool eq(Quaternion a, Quaternion b);
 
-typedef struct MatriceRot {
+typedef const struct MatriceRot {
     double vec[4*4];
 
     explicit MatriceRot();
     MatriceRot(const std::array<double, 4*4>&&);
-    //MatriceRot(const Quaternion) = delete;
+    //MatriceRot(Quaternion) = delete;
     MatriceRot(Quaternion&&);   // M(q{...});
     MatriceRot(const Quaternion&);  // M(q1);
 
