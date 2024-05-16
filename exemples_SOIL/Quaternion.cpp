@@ -185,14 +185,19 @@ double& MatriceRot::operator[](int idx) {
 }
 
 MatriceRot operator+(const MatriceRot& m1, const MatriceRot& m2){
-    M m{{0,0,0,0,0
-        
-    }};
+    M m{};
 
     for (int i = 0; i < 4*4; i++)
-    {
         m[i] = m1[i] + m2[i];
-    }
+    
+    return m;
+}
+
+MatriceRot operator-(const MatriceRot& m1, const MatriceRot& m2){
+    M m{};
+
+    for (int i = 0; i < 4*4; i++)
+        m[i] = m1[i] - m2[i];
     
     return m;
 }

@@ -61,6 +61,7 @@ typedef struct MatriceRot {
     double operator[](int index) const;
     double &operator[](const int index);
     friend MatriceRot operator+(const MatriceRot&, const MatriceRot&);
+    friend MatriceRot operator-(const MatriceRot&, const MatriceRot&);
     operator const char* ();
     static MatriceRot reel();
     static MatriceRot imi();
