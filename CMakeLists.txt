@@ -60,3 +60,10 @@ add_executable(tests_quats
 )
 target_include_directories(tests_quats PRIVATE exemples_SOIL/include)
 target_include_directories(tests_quats PRIVATE exemples_SOIL/antoine)
+
+add_executable(
+    initiation
+    initiation/init.c
+)
+
+target_link_libraries(initiation OpenGL::GL GLUT::GLUT)

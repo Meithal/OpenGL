@@ -16,6 +16,11 @@ int main()
     assert((q1 - q2 == q{1., -20., 0., 0.}));
     //assert((q1 + q2 == std::array<double, 4>{{1., 20., 0., 0.}}));
 
+    assert((q1 * q2) * q3 == q1 * (q2 * q3));   // associativité
+    assert((q1 + q2) * q3 == (q1 * q3) + (q2 * q3));   // distributivité
+
+    assert(!(q3 * q4 == q4 * q3));  // non commutativité
+
     puts(q1);
     puts(q1 * q2);
     puts(q3 * q2);
@@ -30,7 +35,11 @@ int main()
 
     assert((-q{1., 3., -4., 2.5} == q{1., -3., 4., -2.5}));
 
-    assert(-(-q3) == q3);
+    assert(-(-q3) == q3);   // __q = q
+    assert(-(1 / q3) == 1 / -q3);  // _(q−1) =(_q)−1
+    assert(-(1 / q3) == q3 / q3.scalaire());  // _(q−1) = q / (|| q || ^ 2)
+    assert(-(q3 + q4) == -q3 + -q4);    // _(q+q') = _q + _q'
+    assert(eq(-(q3 * q4), -q4 * -q3));  // _(q*q') = _q' * _q
 
     assert(+q1 == 1);
     assert(+q2 == 20);
@@ -61,12 +70,31 @@ int main()
     //assert(q3a.do);
 
     printf(
-        "prod %lf %lf %lf %lf %lf\n", 
+        "prod %.20lf %.20lf %lf %lf %lf\n", 
         +(q3 * q4), +q3 * +q4, +(q3 % q4), q3a * q4a, q3a % q4a
     );
 
     assert(+q3 == +-q3);        // || q || = || _q ||
-    assert((+(q3 * q4) == +q3 * +q4));
+    assert(eq(+(q3 * q4), +q3 * +q4));  // || qxq' || = || q |||| q' || \
+        ^ on a des errers d'arrondi a l'epsilon ici, \
+        donc on utilise eq() au lieu de ==
+    printf(
+        "prod %.20lf %.20lf %.20lf %.20lf\n", 
+        +(1/q1), 1/+q1, +(1/q3), 1/+q3
+    );
+    assert(eq(+(1/q3), 1/+q3)); // || 1 / q || = 1 / || q ||
+    puts(q1 * (1 / q1));
+    puts(q2 * (1 / q2));
+    puts(q3 * (1 / q3));
+    puts(q4 * (1 / q4));
+    assert(eq(+(q1 * (1 / q1)), +q::un)); // q x q' = (1, 0, 0, 0)
+    assert(eq(+(q2 * (1 / q2)), +q::un)); // q x q' = (1, 0, 0, 0)
+    assert(eq(+(q3 * (1 / q3)), +q::un)); // q x q' = (1, 0, 0, 0)
+    assert(eq(+(q4 * (1 / q4)), +q::un)); // q x q' = (1, 0, 0, 0)
+
+    assert(eq(1 / (q3 * q4), (1 / q4) * (1 / q3))); // (q × q′)−1 = q′−1 × q−1
+
+
     puts("tests ok");
 
 }

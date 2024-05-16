@@ -15,10 +15,10 @@
 extern char str_buf[100];
 
 typedef struct Quaternion {
-    double reel;
-    double imi;
-    double imj;
-    double imk;
+    const double reel;
+    const double imi;
+    const double imj;
+    const double imk;
 
     friend Quaternion operator+(const Quaternion& q1, const Quaternion& q2);
     friend Quaternion operator-(const Quaternion& q1, const Quaternion& q2);
@@ -33,5 +33,13 @@ typedef struct Quaternion {
     friend Quaternion operator*(const Quaternion& q1, double d); // produit avec un scalaire
     friend double operator%(const Quaternion& q1, const Quaternion& q2); // produit scalaire
     friend Quaternion cross(const Quaternion& q1, const Quaternion& q2);
+    friend Quaternion operator/(const Quaternion& q1, double d);
+    friend Quaternion operator/(double d, const Quaternion& q2);
+    double scalaire() const;
+    friend Quaternion operator/(const Quaternion& q1, const Quaternion& q2);
 } q;
+
+// verifie l'egalité de deux doubles avant l'epsilon
+bool eq(double a, double b);
+bool eq(Quaternion a, Quaternion b);
 

@@ -27,10 +27,10 @@ bool Quaternion::operator==(const std::array<double, 4>& a) {
 
 Quaternion operator*(const Quaternion& q1, const Quaternion& q2) {
     return Quaternion{
-        q1.reel * q2.reel - q1.imi * q2.imi - q1.imj * q2.imj - q1.imk * q2.imk, 
+        (((q1.reel * q2.reel) - q1.imi * q2.imi) - q1.imj * q2.imj) - q1.imk * q2.imk, 
         q1.reel * q2.imi + q1.imi * q2.reel + q1.imj * q2.imk - q1.imk * q2.imj, 
-        q1.reel * q2.imj + q1.imj * q2.reel + q1.imk * q2.imj - q1.imi * q2.imk, 
-        q1.reel * q2.imk + q1.imk * q2.reel + q1.imi * q2.imj - q1.imj * q2.imi
+        q1.reel * q2.imj - q1.imi * q2.imk + q1.imj * q2.reel + q1.imk * q2.imi, 
+        q1.reel * q2.imk + q1.imi * q2.imj - q1.imj * q2.imi + q1.imk * q2.reel
     };
 }
 
@@ -83,4 +83,45 @@ Quaternion cross(const Quaternion& q1, const Quaternion& q2)
         q1.imk * q2.reel - q1.reel * q2.imk,
         q1.reel * q2.imi - q1.imi * q2.reel
     };
+}
+
+// prend en compte la perte de precision des nombres
+// flottants quand on teste leur egalité
+bool eq(double a, double b)
+{
+    return fabs(a - b) < 1e-9; 
+}
+
+bool eq(Quaternion a, Quaternion b)
+{
+    return eq(+a,  +b); 
+}
+
+Quaternion operator/(const Quaternion& q1, double d) {
+    return q{
+        q1.reel / d,
+        q1.imi / d,
+        q1.imj / d,
+        q1.imk / d
+    };
+}
+
+// utile surtout avec q^-1
+Quaternion operator/(double d, const Quaternion& q2) {
+    double inverse = 1 / q2.scalaire();
+    return q{
+        q2.reel * inverse,
+        - q2.imi * inverse,
+        - q2.imj * inverse,
+        - q2.imk * inverse
+    } * d;
+}
+
+double Quaternion::scalaire() const
+{
+    return reel * reel + imi * imi + imj * imj + imk * imk;
+}
+
+Quaternion operator/(const Quaternion& q1, const Quaternion& q2) {
+    return q1 * 1 / q2;
 }
