@@ -134,6 +134,11 @@ Quaternion Quaternion::unitaire()
     return (*this) / +(*this);
 }
 
+Quaternion Quaternion::fromMatrix(MatriceRot m) 
+{
+    return q{m[0], m[4], m[8], m[12]};
+}
+
 MatriceRot::MatriceRot(const std::array<double, 4*4> && arr) : vec{}
 {
     //puts("ici");
@@ -272,7 +277,3 @@ MatriceRot MatriceRot::operator*(double v) const
     return m;
 }
 
-MatriceRot MatriceRot::reel()
-{
-    return M{{0, 0, 0, 0, 0}};
-}

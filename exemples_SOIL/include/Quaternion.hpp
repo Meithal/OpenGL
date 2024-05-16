@@ -41,7 +41,7 @@ typedef const struct Quaternion {
     double scalaire() const;
     friend Quaternion operator/(const Quaternion& q1, const Quaternion& q2);
     Quaternion unitaire();
-    //Quaternion(MatriceRot);
+    static Quaternion fromMatrix(MatriceRot);
 } q;
 
 // verifie l'egalité de deux doubles avant l'epsilon
@@ -64,10 +64,6 @@ typedef const struct MatriceRot {
     friend MatriceRot operator+(const MatriceRot&, const MatriceRot&);
     friend MatriceRot operator-(const MatriceRot&, const MatriceRot&);
     operator const char* ();
-    static MatriceRot reel();
-    static MatriceRot imi();
-    static MatriceRot imj();
-    static MatriceRot imk();
     MatriceRot operator*(double op) const;
 } M;
 
