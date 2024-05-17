@@ -170,7 +170,7 @@ void Block::Draw()
 
 
 
-    /** La Sph�re **/
+    /** La Sphere **/
     glBindTexture(GL_TEXTURE_2D,textures[SPHERE]);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -180,8 +180,8 @@ void Block::Draw()
     GLUquadric* params = gluNewQuadric();
     gluQuadricTexture(params,GL_TRUE);
     glPushMatrix();
-    glTranslatef(10,10,10);
-    gluSphere(params,5,100,100);
+        glTranslatef(10,10,10);
+        gluSphere(params,5,100,100);
     glPopMatrix();
 }
 

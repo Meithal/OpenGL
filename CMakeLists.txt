@@ -58,6 +58,7 @@ add_executable(tests_quats
     exemples_SOIL/antoine/Transform.cpp
     exemples_SOIL/antoine/Transform.hpp
 )
+
 target_include_directories(tests_quats PRIVATE exemples_SOIL/include)
 target_include_directories(tests_quats PRIVATE exemples_SOIL/antoine)
 

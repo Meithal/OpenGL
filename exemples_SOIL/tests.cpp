@@ -72,8 +72,8 @@ void test_vec()
     //assert(q3a.do);
 
     printf(
-        "prod %.20lf %.20lf %lf %lf %lf\n", 
-        +(q3 * q4), +q3 * +q4, +(q3 % q4), q3a * q4a, q3a % q4a
+        "prod %.20lf %.20lf %.20lf %.20f %.20f\n",
+        +(q3 * q4), +q3 * +q4, +(q3 % q4), (q3a * q4a).magnitude(), (q3a % q4a).magnitude()
     );
 
     assert(+q3 == +-q3);        // || q || = || _q ||
@@ -95,6 +95,11 @@ void test_vec()
     assert(eq(+(q4 * (1 / q4)), +q::un)); // q x q' = (1, 0, 0, 0)
 
     assert(eq(1 / (q3 * q4), (1 / q4) * (1 / q3))); // (q × q′)−1 = q′−1 × q−1
+
+    assert(+(q1.unit()) == 1);
+    assert(+(q2.unit()) == 1);
+    assert(+(q3.unit()) == 1);
+    assert(+(q4.unit()) == 1);
 
     puts("tests vec ok");
 }
@@ -119,8 +124,20 @@ void test_mat()
     puts("tests mac ok");
 }
 
+void test_rot()
+{
+    v3 v{1, 1, 1};
+    q qt{1, 0, 0.4, 0};
+
+    puts(v);
+
+    v3 v2 = rot(v, qt);
+    puts(v2);
+}
+
 int main()
 {
     test_vec();
     test_mat();
+    test_rot();
 }

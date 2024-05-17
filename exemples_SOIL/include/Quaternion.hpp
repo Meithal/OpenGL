@@ -40,7 +40,7 @@ typedef const struct Quaternion {
     friend Quaternion operator/(double d, const Quaternion& q2);
     double scalaire() const;
     friend Quaternion operator/(const Quaternion& q1, const Quaternion& q2);
-    Quaternion unitaire();
+    Quaternion unit();
     static Quaternion fromMatrix(MatriceRot);
 } q;
 
@@ -71,3 +71,18 @@ extern const MatriceRot mr;
 extern const MatriceRot mi;
 extern const MatriceRot mj;
 extern const MatriceRot mk;
+
+typedef struct Vec3 {
+    double i;
+    double j;
+    double k;
+
+    operator const char* ();
+    Vec3 unit();
+} v3;
+
+// rotation quaternion
+v3 rot(v3, q);
+v3 rot(v3, q, q);
+v3 rot(v3, q, q, q);
+

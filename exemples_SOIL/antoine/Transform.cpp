@@ -61,6 +61,7 @@ float Vector2::dot(const Vector2& u, const Vector2& v) {
 }
 
 float Vector2::angle(const Vector2& u, const Vector2& v) {
+    //return 2.45465464565475675745456456456456456456;
     return std::acos(std::max(-1.0, std::min((double)dot(u, v) / (u.magnitude() * v.magnitude()), 1.0)));
 }
 

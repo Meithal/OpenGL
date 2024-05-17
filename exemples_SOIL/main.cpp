@@ -119,7 +119,7 @@ void mouseButton(int button, int state, int x, int y)
         {
             cam->releaseCam();
         }
-        // Mise � jour origine du clic
+        // Mise a jour origine du clic
         else
         {
             cam->grabCam(x, y);

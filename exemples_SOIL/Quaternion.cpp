@@ -129,7 +129,7 @@ Quaternion operator/(const Quaternion& q1, const Quaternion& q2) {
     return q1 * (1 / q2);
 }
 
-Quaternion Quaternion::unitaire()
+Quaternion Quaternion::unit()
 {
     return (*this) / +(*this);
 }
@@ -277,3 +277,31 @@ MatriceRot MatriceRot::operator*(double v) const
     return m;
 }
 
+Vec3::operator const char * ()
+{
+    snprintf(
+        str_buf, STRLEN, "v3: \
+%10.2f %10.2f %10.2f\n", 
+        i, j, k
+    );
+    
+    return str_buf;
+}
+
+v3 rot(v3 v, q qt)
+{
+    //((v = v.unit();
+    q qu((q{0, v.i, v.j, v.k}).unit());
+    q r = (qt * ) * -qt;
+    return {r.imi, r.imj, r.imk};
+}
+
+v3 rot(v3 v, q q1, q q2)
+{
+    return rot(rot(v, q1), q2);
+}
+
+v3 rot(v3 v, q q1, q q2, q q3)
+{
+    return rot(rot(rot(v, q1), q2), q3);
+}
