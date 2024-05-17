@@ -126,13 +126,18 @@ void test_mat()
 
 void test_rot()
 {
-    v3 v{1, 1, 1};
+    v3 vr{0, 1, 0};
+    v3 vr2{0, 2, 0};
     q qt{1, 0, 0.4, 0};
 
-    puts(v);
+    puts(vr);
 
-    v3 v2 = rot(v, qt);
+    v3 v2 = rot(vr, qt);
+    v3 v3 = rot(vr2, qt);
     puts(v2);
+    puts(v3);
+
+    assert(v2 == v3);
 }
 
 int main()

@@ -40,7 +40,7 @@ typedef const struct Quaternion {
     friend Quaternion operator/(double d, const Quaternion& q2);
     double scalaire() const;
     friend Quaternion operator/(const Quaternion& q1, const Quaternion& q2);
-    Quaternion unit();
+    Quaternion unit() const;
     static Quaternion fromMatrix(MatriceRot);
 } q;
 

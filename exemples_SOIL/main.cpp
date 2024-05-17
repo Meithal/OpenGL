@@ -8,6 +8,7 @@
 
 #include "Camera.hpp"
 #include "Map.hpp"
+#include "Block.hpp"
 
 
 // Objet Camera
@@ -131,6 +132,7 @@ void mouseButton(int button, int state, int x, int y)
 void computePos(int inutile)
 {
     cam->updatePos();
+    angle++;
     glutTimerFunc(10, computePos, 0);
 }
 

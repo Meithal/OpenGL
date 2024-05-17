@@ -43,6 +43,11 @@ add_executable(cours_soil
     exemples_SOIL/include/Camera.hpp
     exemples_SOIL/include/Map.hpp
     exemples_SOIL/include/Skybox.hpp
+    exemples_SOIL/include/Quaternion.hpp
+    exemples_SOIL/Quaternion.cpp
+    exemples_SOIL/antoine/Transform.cpp
+    exemples_SOIL/antoine/Transform.hpp
+
 )
 target_link_libraries(cours_soil soil_lib)
 target_include_directories(cours_soil PRIVATE exemples_SOIL/include)

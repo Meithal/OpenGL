@@ -1,4 +1,7 @@
 #include "Block.hpp"
+#include "Quaternion.hpp"
+
+int angle = 0;
 
 Block::Block()
 {
@@ -137,6 +140,9 @@ void Block::Draw()
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
     glBegin(GL_QUADS);
+        Vec3 i{x, y, z};
+        Vec3 r = rot(i, q{(double)angle, 0, 1, 0});
+        x = r.i; y = r.j; z = r.k;
         glTexCoord2f(0.0f, 0.0f);
         glVertex3f(0.0f, 0.0f, 0.0f);
         glTexCoord2f(0.0f, z/TEXTURE_SCALE);
@@ -157,6 +163,7 @@ void Block::Draw()
 
     glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f);
+        
         glVertex3f(x, 0.0f, 0.0f);
         glTexCoord2f(0.0f, z/TEXTURE_SCALE);
         glVertex3f(x, 0.0f, z);

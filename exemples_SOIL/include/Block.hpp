@@ -26,6 +26,8 @@
 
 #define TEXTURE_SCALE 1.0f
 
+extern int angle;
+
 class Block
 {
     public:

@@ -129,7 +129,7 @@ Quaternion operator/(const Quaternion& q1, const Quaternion& q2) {
     return q1 * (1 / q2);
 }
 
-Quaternion Quaternion::unit()
+Quaternion Quaternion::unit() const
 {
     return (*this) / +(*this);
 }
@@ -288,11 +288,24 @@ Vec3::operator const char * ()
     return str_buf;
 }
 
+Vec3 Vec3::unit()
+{
+    double norm = sqrt(i*i + j*j + k*k);
+    return Vec3{i / norm, j / norm, k / norm};
+}
+
 v3 rot(v3 v, q qt)
 {
-    //((v = v.unit();
-    q qu((q{0, v.i, v.j, v.k}).unit());
-    q r = (qt * ) * -qt;
+    int angle = qt.reel;
+    angle %= 360;
+    double theta = angle * M_PI / 180.;
+    theta /= 2.;
+    v3 u{qt.imi, qt.imj, qt.imk};
+    u = u.unit();
+    //const q unit{qt.unit()};
+    q qr {cos(theta), u.i * sin(theta), u.j * sin(theta), u.k * sin(theta)};
+
+    q r = (qr * q{0, v.i, v.j, v.k}) * -qr;
     return {r.imi, r.imj, r.imk};
 }
 
