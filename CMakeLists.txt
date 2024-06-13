@@ -9,6 +9,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(GLEW REQUIRED)
 #find_package(SOIL REQUIRED)
 
 add_library(
@@ -54,7 +55,9 @@ target_include_directories(cours_soil PRIVATE exemples_SOIL/include)
 
 add_custom_target(copy-runtime-files ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/exemples_SOIL/img ${CMAKE_BINARY_DIR}/img
-    DEPENDS cours_soil)
+    )
+
+ADD_DEPENDENCIES ( cours_soil copy-runtime-files )
 
 add_executable(tests_quats
     exemples_SOIL/tests.cpp
@@ -69,7 +72,13 @@ target_include_directories(tests_quats PRIVATE exemples_SOIL/antoine)
 
 add_executable(
     initiation
-    initiation/init.c
+        initiation/init.cpp
+    initiation/common/GLShader.hpp
+    initiation/common/GLShader.cpp
 )
 
-target_link_libraries(initiation OpenGL::GL GLUT::GLUT)
+target_link_libraries(initiation OpenGL::GL GLUT::GLUT GLEW::GLEW)
+add_custom_target(copy-runtime-shaders ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/initiation/shaders ${CMAKE_BINARY_DIR}/
+        )
+ADD_DEPENDENCIES ( initiation copy-runtime-shaders )

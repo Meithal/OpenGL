@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 //#include <GL/gl.h>
 //#include <GL/glu.h>
@@ -24,7 +25,7 @@ void reshapeWindow(int w, int h)
     if (h == 0)
         h = 1;
 
-    float ratio =  w * 1.0 / h;
+    float ratio =  w * 1.0f / h;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -159,6 +160,8 @@ void LoadTextures()
 
 int main(int argc, char **argv)
 {
+    puts(argv[0]);
+
     /** CREATION FENETRE **/
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);

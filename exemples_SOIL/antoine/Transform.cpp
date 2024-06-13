@@ -72,6 +72,7 @@ Vector3::Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 Vector3 Vector3::operator*(const float& s) const {
     return Vector3(x * s, y * s, z * s);
 }
+
 float Vector3::distance(const Vector3& u, const Vector3& v){
     return std::sqrt(pow(v.x - u.x,2) + pow(v.y - u.y,2) + pow(v.z - u.z,2));
 }

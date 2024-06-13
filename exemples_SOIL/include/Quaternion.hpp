@@ -79,6 +79,11 @@ typedef struct Vec3 {
 
     operator const char* ();
     Vec3 unit();
+    friend Vec3 operator-(const Vec3& q1, const Vec3& q2);
+    friend Vec3 operator+(const Vec3& q1, const Vec3& q2);
+    friend Vec3 operator*(const Vec3& q1, const double q2);
+
+
 } v3;
 
 // rotation quaternion

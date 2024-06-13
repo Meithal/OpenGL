@@ -30,7 +30,7 @@ bool Quaternion::operator==(const std::array<double, 4>& a) const {
 
 Quaternion operator*(const Quaternion& q1, const Quaternion& q2) {
     return Quaternion{
-        (((q1.reel * q2.reel) - q1.imi * q2.imi) - q1.imj * q2.imj) - q1.imk * q2.imk, 
+        q1.reel * q2.reel - q1.imi * q2.imi - q1.imj * q2.imj - q1.imk * q2.imk, 
         q1.reel * q2.imi + q1.imi * q2.reel + q1.imj * q2.imk - q1.imk * q2.imj, 
         q1.reel * q2.imj - q1.imi * q2.imk + q1.imj * q2.reel + q1.imk * q2.imi, 
         q1.reel * q2.imk + q1.imi * q2.imj - q1.imj * q2.imi + q1.imk * q2.reel
@@ -292,6 +292,22 @@ Vec3 Vec3::unit()
 {
     double norm = sqrt(i*i + j*j + k*k);
     return Vec3{i / norm, j / norm, k / norm};
+}
+
+Vec3 operator+(const Vec3& q1, const Vec3& q2) {
+    return Vec3{q1.i + q2.i, q1.j + q2.j, q1.k + q2.k};
+}
+
+Vec3 operator-(const Vec3& q1, const Vec3& q2) {
+    return Vec3{q1.i - q2.i, q1.j - q2.j, q1.k - q2.k};
+}
+
+Vec3 operator*(const Vec3& q1, const double d) {
+    return Vec3 {
+            q1.i * d,
+            q1.j * d,
+            q1.k * d,
+    };
 }
 
 v3 rot(v3 v, q qt)

@@ -60,15 +60,16 @@ void Map::DrawGround()
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex3f(-50.0f, 0.0f, -50.0f);
-    glTexCoord2f(0.0f, 50.0f);
-    glVertex3f(-50.0f, 0.0f,  50.0f);
-    glTexCoord2f(50.0f, 50.0f);
-    glVertex3f(50.0f, 0.0f, 50.0f);
-    glTexCoord2f(50.0f, 0.0f);
-    glVertex3f(50.0f, 0.0f, -50.0f);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(-50.0f, 0.0f, -50.0f);
+        glTexCoord2f(0.0f, 50.0f);
+        glVertex3f(-50.0f, 0.0f,  50.0f);
+        glTexCoord2f(50.0f, 50.0f);
+        glVertex3f(50.0f, 0.0f, 50.0f);
+        glTexCoord2f(50.0f, 0.0f);
+        glVertex3f(50.0f, 0.0f, -50.0f);
     glEnd();
+
     glTranslatef(0.0f, 1.0f, 0.0f);
     b->SetTexture(FRONT, ListeTextures[1]);
     b->SetTexture(BACK, ListeTextures[7]);
@@ -140,7 +141,6 @@ void Map::DrawSkybox(Camera *cam)
         glVertex3f( SKY_DISTANCE + cam->posx, SKY_DISTANCE + cam->posy, SKY_DISTANCE + cam->posz);
         glTexCoord2f(0, 1);
         glVertex3f(-SKY_DISTANCE + cam->posx, SKY_DISTANCE + cam->posy, SKY_DISTANCE + cam->posz);
-
     glEnd();
 
     // Render the right quad
