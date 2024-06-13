@@ -198,3 +198,18 @@ void Map::DrawSkybox(Camera *cam)
         glVertex3f(SKY_DISTANCE + cam->posx, -SKY_DISTANCE + cam->posy, SKY_DISTANCE + cam->posz);
     glEnd();
 }
+
+// change la texture de 
+void Map::ChangeTextures()
+{
+    static int currentTextureIndex = 0;
+    currentTextureIndex = (currentTextureIndex + 1) % 20;
+
+    b->SetTexture(FRONT, ListeTextures[currentTextureIndex]);
+    b->SetTexture(BACK, ListeTextures[currentTextureIndex]);
+    b->SetTexture(TOP, ListeTextures[currentTextureIndex]);
+    b->SetTexture(BOT, ListeTextures[currentTextureIndex]);
+    b->SetTexture(RIGHT, ListeTextures[currentTextureIndex]);
+    b->SetTexture(LEFT, ListeTextures[currentTextureIndex]);
+    b->SetTexture(SPHERE, ListeTextures[currentTextureIndex]);
+}

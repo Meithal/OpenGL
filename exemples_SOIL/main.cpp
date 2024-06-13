@@ -55,6 +55,9 @@ void KeyboardDown(unsigned char key, int xx, int yy)
     case 'q':
         cam->deltaStrafe = 1;
         break;
+    case 't':
+        m->ChangeTextures(); // change la texture lors de l'apuis sur t
+        break;
     }
 }
 void KeyboardUp(unsigned char key, int xx, int yy)
@@ -163,7 +166,8 @@ int main(int argc, char **argv)
     puts(argv[0]);
 
     /** CREATION FENETRE **/
-    glutInit(&argc, argv);
+    glutInit(&argc, argv)
+    -+;
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100,100);
     glutInitWindowSize(320,320);

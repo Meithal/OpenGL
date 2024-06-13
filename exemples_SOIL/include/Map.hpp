@@ -24,6 +24,7 @@ class Map
         void LoadTextures(void);
         void DrawGround(void);
         void DrawSkybox(Camera *cam);
+        void ChangeTextures();
     protected:
     private:
 };
