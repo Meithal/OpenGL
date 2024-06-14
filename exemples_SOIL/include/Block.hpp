@@ -43,7 +43,11 @@ class Block
         float x;
         float y;
         float z;
-    protected:
+
+        bool change_texture;
+        bool change_asked;
+
+protected:
 
     private:
         GLuint textures[8];

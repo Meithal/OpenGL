@@ -47,10 +47,12 @@ void Map::LoadTextures()
     ListeTextures[19] = SOIL_load_OGL_texture("img/terre.jpg",SOIL_LOAD_AUTO,SOIL_CREATE_NEW_ID,SOIL_FLAG_INVERT_Y);
 }
 
+
+Block *b = new Block(2.0f, 2.0f, 2.0f);
+Block *b2 = new Block(2.0f, 2.0f, 2.0f);
+
 void Map::DrawGround()
 {
-    Block *b = new Block(2.0f, 2.0f, 2.0f);
-    Block *b2 = new Block(2.0f, 2.0f, 2.0f);
 
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -73,13 +75,33 @@ void Map::DrawGround()
     glEnd();
 
     glTranslatef(0.0f, 1.0f, 0.0f);
-    b->SetTexture(FRONT, ListeTextures[1]);
-    b->SetTexture(BACK, ListeTextures[7]);
-    b->SetTexture(TOP, ListeTextures[12]);
-    b->SetTexture(BOT, ListeTextures[4]);
-    b->SetTexture(RIGHT, ListeTextures[17]);
-    b->SetTexture(LEFT, ListeTextures[9]);
-    b->SetTexture(SPHERE, ListeTextures[19]);
+    if(b->change_texture) {
+        static int currentTextureIndex = 0;
+        if(b->change_asked) {
+
+            currentTextureIndex = (currentTextureIndex + 1) % 20;
+            b->change_asked = false;
+        }
+
+        b->SetTexture(FRONT, ListeTextures[currentTextureIndex]);
+        b->SetTexture(BACK, ListeTextures[currentTextureIndex]);
+        b->SetTexture(TOP, ListeTextures[currentTextureIndex]);
+        b->SetTexture(BOT, ListeTextures[currentTextureIndex]);
+        b->SetTexture(RIGHT, ListeTextures[currentTextureIndex]);
+        b->SetTexture(LEFT, ListeTextures[currentTextureIndex]);
+        b->SetTexture(SPHERE, ListeTextures[currentTextureIndex]);
+
+        //b->change_texture = false;
+    } else {
+        b->SetTexture(FRONT, ListeTextures[1]);
+        b->SetTexture(BACK, ListeTextures[7]);
+        b->SetTexture(TOP, ListeTextures[12]);
+        b->SetTexture(BOT, ListeTextures[4]);
+        b->SetTexture(RIGHT, ListeTextures[17]);
+        b->SetTexture(LEFT, ListeTextures[9]);
+        b->SetTexture(SPHERE, ListeTextures[19]);
+
+    }
     b->Draw();
     //glPushMatrix();
 
@@ -231,14 +253,16 @@ void Map::DrawSkybox(Camera *cam)
 // change la texture de 
 void Map::ChangeTextures()
 {
-    static int currentTextureIndex = 0;
-    currentTextureIndex = (currentTextureIndex + 1) % 20;
+    b->change_texture = !b->change_texture;
+    b->change_asked = true;
+    return;
 
-    b->SetTexture(FRONT, ListeTextures[currentTextureIndex]);
-    b->SetTexture(BACK, ListeTextures[currentTextureIndex]);
-    b->SetTexture(TOP, ListeTextures[currentTextureIndex]);
-    b->SetTexture(BOT, ListeTextures[currentTextureIndex]);
-    b->SetTexture(RIGHT, ListeTextures[currentTextureIndex]);
-    b->SetTexture(LEFT, ListeTextures[currentTextureIndex]);
-    b->SetTexture(SPHERE, ListeTextures[currentTextureIndex]);
+//    b->SetTexture(FRONT, ListeTextures[currentTextureIndex]);
+//    b->SetTexture(BACK, ListeTextures[currentTextureIndex]);
+//    b->SetTexture(TOP, ListeTextures[currentTextureIndex]);
+//    b->SetTexture(BOT, ListeTextures[currentTextureIndex]);
+//    b->SetTexture(RIGHT, ListeTextures[currentTextureIndex]);
+//    b->SetTexture(LEFT, ListeTextures[currentTextureIndex]);
+//    b->SetTexture(SPHERE, ListeTextures[currentTextureIndex]);
+//    b->Draw();
 }
