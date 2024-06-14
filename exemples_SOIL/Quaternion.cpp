@@ -277,7 +277,7 @@ MatriceRot MatriceRot::operator*(double v) const
     return m;
 }
 
-Vec3::operator const char * ()
+Vec3::operator const char * () const
 {
     snprintf(
         str_buf, STRLEN, "v3: \
@@ -288,7 +288,7 @@ Vec3::operator const char * ()
     return str_buf;
 }
 
-Vec3 Vec3::unit()
+Vec3 Vec3::unit() const
 {
     double norm = sqrt(i*i + j*j + k*k);
     return Vec3{i / norm, j / norm, k / norm};
@@ -310,10 +310,16 @@ Vec3 operator*(const Vec3& q1, const double d) {
     };
 }
 
+/**
+ * @param v le point a tourner (qu'il faut mettre a l'origine soi meme)
+ * @param qt un quaternion qui contient l'angle en degrés (qu'on clamp a 360 et qu'on convertit en radians)
+ *           et le vecteur direction (qu'on normalise nous meme)
+ * @return le point tourne
+ */
 v3 rot(v3 v, q qt)
 {
-    int angle = qt.reel;
-    angle %= 360;
+    double angle = qt.reel;
+    angle = fmod(angle, 360);
     double theta = angle * M_PI / 180.;
     theta /= 2.;
     v3 u{qt.imi, qt.imj, qt.imk};

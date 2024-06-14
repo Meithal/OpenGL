@@ -71,10 +71,20 @@ void Block::Draw()
     };
 
     for (Vec3 & p: verts) {
-        Vec3 translated = p + center * 3;
+        Vec3 translated = p - center;
         Vec3 i{translated.i, translated.j, translated.k};
-        Vec3 rotated = rot(i, q{(double)angle, 0, 1, 0}, q{(double)angle/2, 0, 0, 1});
-        p = rotated + center ;
+        Vec3 rotated = rot(
+                i
+                ,q{sin((double)angle / 30) * 30, 1, 0, 0}
+                ,q{(double)angle / 10, 1, 0, }
+                );
+        Vec3 translated2 = rotated + center * 3;
+        Vec3 rotated2 = rot(
+                translated2
+                ,q{(double)angle, 0, 1, 0}
+                //,q{(double)angle/2, 0, 0, 1}
+        );
+        p = rotated2 - center * 2 ;
     }
 
 
@@ -198,21 +208,6 @@ void Block::Draw()
 
     glPopMatrix();
 
-
-
-    /** La Sphere **/
-    glBindTexture(GL_TEXTURE_2D,textures[SPHERE]);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-    GLUquadric* params = gluNewQuadric();
-    gluQuadricTexture(params,GL_TRUE);
-    glPushMatrix();
-        glTranslatef(10,10,10);
-        gluSphere(params,5,100,100);
-    glPopMatrix();
 }
 
 void Block::SetTexture(int face, GLuint texture)

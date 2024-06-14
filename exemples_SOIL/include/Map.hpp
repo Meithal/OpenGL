@@ -27,6 +27,7 @@ class Map
         void ChangeTextures();
     protected:
     private:
+        GLuint textures[8];
 };
 
 #endif // MAP_H

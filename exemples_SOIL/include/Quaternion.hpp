@@ -38,9 +38,9 @@ typedef const struct Quaternion {
     friend Quaternion cross(const Quaternion& q1, const Quaternion& q2); // douteux
     friend Quaternion operator/(const Quaternion& q1, double d);
     friend Quaternion operator/(double d, const Quaternion& q2);
-    double scalaire() const;
+    [[nodiscard]] double scalaire() const;
     friend Quaternion operator/(const Quaternion& q1, const Quaternion& q2);
-    Quaternion unit() const;
+    [[nodiscard]] Quaternion unit() const;
     static Quaternion fromMatrix(MatriceRot);
 } q;
 
@@ -77,12 +77,11 @@ typedef struct Vec3 {
     double j;
     double k;
 
-    operator const char* ();
-    Vec3 unit();
+    operator const char* () const;
+    [[nodiscard]] Vec3 unit() const;
     friend Vec3 operator-(const Vec3& q1, const Vec3& q2);
     friend Vec3 operator+(const Vec3& q1, const Vec3& q2);
     friend Vec3 operator*(const Vec3& q1, const double q2);
-
 
 } v3;
 

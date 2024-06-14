@@ -50,6 +50,7 @@ void Map::LoadTextures()
 void Map::DrawGround()
 {
     Block *b = new Block(2.0f, 2.0f, 2.0f);
+    Block *b2 = new Block(2.0f, 2.0f, 2.0f);
 
     glEnable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -59,6 +60,7 @@ void Map::DrawGround()
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
+    /// SOL
     glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f);
         glVertex3f(-50.0f, 0.0f, -50.0f);
@@ -79,6 +81,33 @@ void Map::DrawGround()
     b->SetTexture(LEFT, ListeTextures[9]);
     b->SetTexture(SPHERE, ListeTextures[19]);
     b->Draw();
+    //glPushMatrix();
+
+    glTranslatef(5.0f, 1.0f, 0.0f);
+    b2->SetTexture(FRONT, ListeTextures[1]);
+    b2->SetTexture(BACK, ListeTextures[7]);
+    b2->SetTexture(TOP, ListeTextures[12]);
+    b2->SetTexture(BOT, ListeTextures[4]);
+    b2->SetTexture(RIGHT, ListeTextures[17]);
+    b2->SetTexture(LEFT, ListeTextures[9]);
+    b2->SetTexture(SPHERE, ListeTextures[19]);
+    b2->Draw();
+
+    /** La Sphere **/
+    textures[SPHERE] = ListeTextures[19];
+    glBindTexture(GL_TEXTURE_2D,textures[SPHERE]);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+    GLUquadric* params = gluNewQuadric();
+    gluQuadricTexture(params,GL_TRUE);
+    glPushMatrix();
+    glTranslatef(10,10,10);
+    gluSphere(params,5,100,100);
+    glPopMatrix();
+    //glPopMatrix();
 }
 
 void Map::DrawSkybox(Camera *cam)
