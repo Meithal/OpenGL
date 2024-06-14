@@ -32,7 +32,7 @@ class Block
 {
     public:
         Block();
-        Block(float x, float y, float z);
+        Block(float x, float y, float z, bool is_mat = false);
         void Draw();
         void SetTexture(int face, GLuint texture);
 
@@ -46,6 +46,8 @@ class Block
 
         bool change_texture;
         bool change_asked;
+
+        bool mat_rot;
 
 protected:
 

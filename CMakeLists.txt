@@ -52,6 +52,7 @@ add_executable(cours_soil
 )
 target_link_libraries(cours_soil soil_lib)
 target_include_directories(cours_soil PRIVATE exemples_SOIL/include)
+target_include_directories(cours_soil PRIVATE exemples_SOIL/antoine)
 
 add_custom_target(copy-runtime-files ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/exemples_SOIL/img ${CMAKE_BINARY_DIR}/img

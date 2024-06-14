@@ -50,6 +50,7 @@ void Map::LoadTextures()
 
 Block *b = new Block(2.0f, 2.0f, 2.0f);
 Block *b2 = new Block(2.0f, 2.0f, 2.0f);
+Block *b3 = new Block(2.0f, 2.0f, 2.0f, true);
 
 void Map::DrawGround()
 {
@@ -114,6 +115,16 @@ void Map::DrawGround()
     b2->SetTexture(LEFT, ListeTextures[9]);
     b2->SetTexture(SPHERE, ListeTextures[19]);
     b2->Draw();
+
+    glTranslatef(5.0f, 1.0f, 0.0f);
+    b3->SetTexture(FRONT, ListeTextures[1]);
+    b3->SetTexture(BACK, ListeTextures[7]);
+    b3->SetTexture(TOP, ListeTextures[12]);
+    b3->SetTexture(BOT, ListeTextures[4]);
+    b3->SetTexture(RIGHT, ListeTextures[17]);
+    b3->SetTexture(LEFT, ListeTextures[9]);
+    b3->SetTexture(SPHERE, ListeTextures[19]);
+    b3->Draw();
 
     /** La Sphere **/
     textures[SPHERE] = ListeTextures[19];

@@ -80,7 +80,7 @@ struct Vector2 {
 };
 
 typedef struct QuatA {
-    float x, y, z, w;
+    float w, x, y, z;
 
     QuatA();
     QuatA(float _w, float _x, float _y, float _z);

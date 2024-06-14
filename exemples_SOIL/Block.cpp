@@ -2,6 +2,7 @@
 
 #include "Block.hpp"
 #include "Quaternion.hpp"
+#include "Transform.hpp"
 
 int angle = 0;
 
@@ -25,11 +26,12 @@ Block::Block()
     }
 }
 
-Block::Block(float x, float y, float z)
+Block::Block(float x, float y, float z, bool _is_mat)
 {
     posx = 0.0f;
     posy = 0.0f;
     posz = 0.0f;
+    mat_rot =  _is_mat;
 
     this->x = x;
     this->y = y;
@@ -39,6 +41,7 @@ Block::Block(float x, float y, float z)
     {
         textures[i] = 0;
     }
+
     for (int j = 0; j < 3; j ++)
     {
         anchor[j] = 0;
@@ -70,22 +73,35 @@ void Block::Draw()
             {x, 0.0f, z}
     };
 
-    for (Vec3 & p: verts) {
-        Vec3 translated = p - center;
-        Vec3 i{translated.i, translated.j, translated.k};
-        Vec3 rotated = rot(
-                i
-                ,q{sin((double)angle / 30) * 30, 1, 0, 0}
-                ,q{(double)angle / 10, 1, 0, }
-                );
-        Vec3 translated2 = rotated + center * 3;
-        Vec3 rotated2 = rot(
-                translated2
-                ,q{(double)angle, 0, 1, 0}
-                //,q{(double)angle/2, 0, 0, 1}
-        );
-        p = rotated2 - center * 2 ;
+    if(!mat_rot) {
+        for (Vec3 &p: verts) {
+            Vec3 translated = p - center;
+            Vec3 i{translated.i, translated.j, translated.k};
+            Vec3 rotated = rot(
+                    i, q{sin((double) angle / 30) * 30, 1, 0, 0},
+                    q{(double) angle / 10, 0, 1, 0}
+            );
+            Vec3 translated2 = rotated + center * 3;
+            Vec3 rotated2 = rot(
+                    translated2, q{(double) angle, 0, 1, 0}
+                    //,q{(double)angle/2, 0, 0, 1}
+            );
+            p = rotated2 - center * 2;
+        }
+    } else {
+        for (Vec3 &p: verts) {
+
+            auto qa = QuatA(1, p.i, p.j, p.k);
+
+            auto rotated = qa.euler(p.i, p.j, p.k);
+            auto res = rotated.toEuler();
+
+            p.i = res.x;
+            p.j = res.y;
+            p.k = res.z;
+        }
     }
+
 
 
     /// LE CUBE
