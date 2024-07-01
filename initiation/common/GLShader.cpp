@@ -2,7 +2,11 @@
 //#include "stdafx.h"
 #include "../common/GLShader.hpp"
 //#define GLEW_STATIC
+#ifndef __APPLE__
 #include "GL/glew.h"
+#else
+#include <OpenGL/gl3.h>
+#endif
 
 #include <fstream>
 #include <iostream>
@@ -41,6 +45,11 @@ bool GLShader::LoadVertexShader(const char* filename)
 {
 	// 1. Charger le fichier en memoire
 	std::ifstream fin(filename, std::ios::in | std::ios::binary);
+    if(!fin.is_open() || !fin.good()) {
+        std::cerr << "fail to open" << filename << std::endl;
+        fin.close();
+        return false;
+    }
 	fin.seekg(0, std::ios::end);
 	uint32_t length = (uint32_t)fin.tellg();
 	fin.seekg(0, std::ios::beg);
@@ -51,6 +60,7 @@ bool GLShader::LoadVertexShader(const char* filename)
 
 	// 2. Creer le shader object
 	m_VertexShader = glCreateShader(GL_VERTEX_SHADER);
+
 	glShaderSource(m_VertexShader, 1, &buffer, nullptr);
 	// 3. Le compiler
 	glCompileShader(m_VertexShader);
@@ -84,15 +94,20 @@ bool GLShader::LoadGeometryShader(const char* filename)
 	delete[] buffer;
 	fin.close();	// non obligatoire ici
 
-					// 5. 
-					// verifie le status de la compilation
+    // 5.
+    // verifie le status de la compilation
 	return ValidateShader(m_GeometryShader);
 }
 
 bool GLShader::LoadFragmentShader(const char* filename)
 {
 	std::ifstream fin(filename, std::ios::in | std::ios::binary);
-	fin.seekg(0, std::ios::end);
+    if(!fin.is_open() || !fin.good()) {
+        std::cerr << "fail to open" << filename << std::endl;
+        fin.close();
+        return false;
+    }
+    fin.seekg(0, std::ios::end);
 	uint32_t length = (uint32_t)fin.tellg();
 	fin.seekg(0, std::ios::beg);
 	char* buffer = nullptr;
@@ -136,10 +151,10 @@ bool GLShader::Create()
 		{
 			char* infoLog = new char[infoLen + 1];
 
-			glGetProgramInfoLog(m_Program, infoLen, NULL, infoLog);
+			glGetProgramInfoLog(m_Program, infoLen, nullptr, infoLog);
 			std::cout << "Erreur de lien du programme: " << infoLog << std::endl;
 
-			delete(infoLog);
+			delete[] infoLog;
 		}
 
 		glDeleteProgram(m_Program);
@@ -150,7 +165,7 @@ bool GLShader::Create()
 	return true;
 }
 
-void GLShader::Destroy()
+void GLShader::Destroy() const
 {
 	glDetachShader(m_Program, m_VertexShader);
 	glDetachShader(m_Program, m_FragmentShader);

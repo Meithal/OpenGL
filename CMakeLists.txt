@@ -78,8 +78,13 @@ add_executable(
     initiation/common/GLShader.cpp
 )
 
+if (APPLE)
+target_link_libraries(initiation OpenGL::GL GLUT::GLUT)
+else()
 target_link_libraries(initiation OpenGL::GL GLUT::GLUT GLEW::GLEW)
+endif (APPLE)
+
 add_custom_target(copy-runtime-shaders ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/initiation/shaders ${CMAKE_BINARY_DIR}/
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/initiation/shaders ${CMAKE_BINARY_DIR}/shaders
         )
 ADD_DEPENDENCIES ( initiation copy-runtime-shaders )

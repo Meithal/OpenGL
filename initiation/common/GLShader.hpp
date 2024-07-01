@@ -29,5 +29,5 @@ public:
 	bool LoadGeometryShader(const char* filename);
 	bool LoadFragmentShader(const char* filename);
 	bool Create();
-	void Destroy();
+	void Destroy() const;
 };
