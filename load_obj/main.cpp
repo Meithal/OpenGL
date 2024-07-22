@@ -1,10 +1,75 @@
+//
+// Created by ivo on 22/07/2024.
+//
+
+
 #include <cstdio>
 #include <cmath>
 
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 
-#include "common/GLShader.hpp"
+#include "../initiation/common/GLShader.hpp"
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tinyobjloader/tiny_obj_loader.h"
+
+#include <vector>
+#include <string>
+
+#include <iostream>
+
+bool loadOBJ(const std::string& path, std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& texcoords) {
+    //tinyobj::attrib_t attrib;
+    //std::vector<tinyobj::shape_t> shapes;
+    //std::vector<tinyobj::material_t> materials;
+    std::string warn, err;
+
+
+    std::string inputfile = "assets/monkey.obj";
+    tinyobj::ObjReaderConfig reader_config;
+    reader_config.mtl_search_path = "./assets"; // Path to material files
+
+    tinyobj::ObjReader reader;
+
+    if (!reader.ParseFromFile(inputfile, reader_config)) {
+        if (!reader.Error().empty()) {
+            std::cerr << "TinyObjReader: " << reader.Error();
+        }
+        exit(1);
+    }
+    //tinyobj::ObjReader::ParseFromFile("assets/monkey.obj", )
+    /*if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str())) {
+        std::cerr << "Failed to load OBJ file: " << err << std::endl;
+        return false;
+    }*/
+
+    auto& attrib = reader.GetAttrib();
+    auto& shapes = reader.GetShapes();
+    auto& materials = reader.GetMaterials();
+
+    for (const auto& shape : shapes) {
+        for (const auto& index : shape.mesh.indices) {
+            vertices.push_back(attrib.vertices[3 * index.vertex_index + 0]);
+            vertices.push_back(attrib.vertices[3 * index.vertex_index + 1]);
+            vertices.push_back(attrib.vertices[3 * index.vertex_index + 2]);
+
+            if (!attrib.normals.empty()) {
+                normals.push_back(attrib.normals[3 * index.normal_index + 0]);
+                normals.push_back(attrib.normals[3 * index.normal_index + 1]);
+                normals.push_back(attrib.normals[3 * index.normal_index + 2]);
+            }
+
+            if (!attrib.texcoords.empty()) {
+                texcoords.push_back(attrib.texcoords[2 * index.texcoord_index + 0]);
+                texcoords.push_back(attrib.texcoords[2 * index.texcoord_index + 1]);
+            }
+        }
+    }
+    return true;
+}
+
+
 
 int swidth = 960;
 int sheight = 540;
@@ -69,7 +134,7 @@ void RenderTri(int x, int y,  int w, int h)
             2, GL_FLOAT,
             GL_FALSE,
             5 * sizeof vertice[0],
-    vertice
+            vertice
     );
 
     int loc_col = glGetAttribLocation(basicProgram, "a_color");
@@ -80,7 +145,7 @@ void RenderTri(int x, int y,  int w, int h)
             3, GL_FLOAT,
             GL_FALSE,
             5 * sizeof vertice[0],
-    vertice + 2
+            vertice + 2
     );
 
     /*glBegin(GL_TRIANGLES);
@@ -118,20 +183,20 @@ void RenderFan(int x, int y,  int w, int h)
 
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_TRIANGLE_FAN);
-        glColor3ub(255, 0, 0); // Rouge
-        glVertex3f(0.0f, 0.5f, /*sin(millis / 1000) **/ -5);
+    glColor3ub(255, 0, 0); // Rouge
+    glVertex3f(0.0f, 0.5f, /*sin(millis / 1000) **/ -5);
 
-        glColor3ub(0, 255, 0); // Vert
-        glVertex3f(-0.5f, -0.5f,  -5);
+    glColor3ub(0, 255, 0); // Vert
+    glVertex3f(-0.5f, -0.5f,  -5);
 
-        glColor3ub(0, 0, 255); // Bleu
-        glVertex3f(0.5f, -0.5f, -5);
+    glColor3ub(0, 0, 255); // Bleu
+    glVertex3f(0.5f, -0.5f, -5);
 
-        glColor3ub(255  * sin((millis +333)/ 1000),255 * sin((millis + 666) / 1000), 255 * sin(millis / 1000)); // Bleu
-        glVertex3f(1.f, 0.5f,  -5);
+    glColor3ub(255  * sin((millis +333)/ 1000),255 * sin((millis + 666) / 1000), 255 * sin(millis / 1000)); // Bleu
+    glVertex3f(1.f, 0.5f,  -5);
 
-        glColor3ub(0,255, 255); // Jaune
-        glVertex3f(1.f, 0.2f,  1.5);
+    glColor3ub(0,255, 255); // Jaune
+    glVertex3f(1.f, 0.2f,  1.5);
 
     glEnd();
 
@@ -146,14 +211,14 @@ void RenderLine(int x, int y,  int w, int h)
     glClearColor(1.f, 0.f, 1.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_LINE_STRIP);
-        glColor3ub(255, 0, 0); // Rouge
-        glVertex2f(0.0f, 0.5f);
-        glColor3ub(0, 255, 0); // Vert
-        glVertex2f(-0.5f, -0.5f);
-        glColor3ub(0, 0, 255); // Bleu
-        glVertex2f(0.5f, -0.5f);
-        glColor3ub(0, 255, 255); // Bleu
-        glVertex2f(1.f, 0.5f);
+    glColor3ub(255, 0, 0); // Rouge
+    glVertex2f(0.0f, 0.5f);
+    glColor3ub(0, 255, 0); // Vert
+    glVertex2f(-0.5f, -0.5f);
+    glColor3ub(0, 0, 255); // Bleu
+    glVertex2f(0.5f, -0.5f);
+    glColor3ub(0, 255, 255); // Bleu
+    glVertex2f(1.f, 0.5f);
     glEnd();
 }
 
@@ -167,38 +232,75 @@ void RenderTriStrip(int x, int y,  int w, int h)
     gluOrtho2D(0, 400, 0, 400);
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_TRIANGLE_STRIP);
-        glColor3ub(255, 0, 0); // Rouge
-        glVertex2f(0.0f * 400 + 200, 0.5f * 400 + 200);
-        glColor3ub(0, 255, 0); // Vert
-        glVertex2f(-0.5f * 400 + 200, -0.5f * 400 + 200);
-        glColor3ub(0, 0, 255); // Bleu
-        glVertex2f(0.5f * 400 + 200, -0.5f * 400 + 200);
-        glColor3ub(0, 255, 255); // Bleu
-        glVertex2f(1.f * 400 + 200, 0.5f*400 + 200);
+    glColor3ub(255, 0, 0); // Rouge
+    glVertex2f(0.0f * 400 + 200, 0.5f * 400 + 200);
+    glColor3ub(0, 255, 0); // Vert
+    glVertex2f(-0.5f * 400 + 200, -0.5f * 400 + 200);
+    glColor3ub(0, 0, 255); // Bleu
+    glVertex2f(0.5f * 400 + 200, -0.5f * 400 + 200);
+    glColor3ub(0, 255, 255); // Bleu
+    glVertex2f(1.f * 400 + 200, 0.5f*400 + 200);
     glEnd();
     glPopMatrix();
+}
+
+std::vector<GLfloat> vertices;
+std::vector<GLfloat> normals;
+std::vector<GLfloat> textures;
+std::string err;
+
+void RenderObj(int x, int y,  int w, int h)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    int basicProgram = g_BasicShader.GetProgram();
+    glUseProgram(basicProgram);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices.data());
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, 0, normals.data());
+
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glUseProgram(0);
+
+    glutSwapBuffers();
 }
 
 // la ‘callback’ executee par glutDisplayFunc()
 // coordonnes commencent en bas a gauche
 void Display(/*int x, int y,  int w, int h*/)
 {
-    RenderTri(0, sheight / 2, swidth / 2, sheight / 2);
+    /*RenderTri(0, sheight / 2, swidth / 2, sheight / 2);
     RenderFan(swidth / 2, sheight / 2, swidth / 2, sheight / 2);
     RenderLine(0, 0, swidth / 2, sheight / 2);
-    RenderTriStrip(swidth / 2, 0, swidth / 2, sheight / 2);
+    RenderTriStrip(swidth / 2, 0, swidth / 2, sheight / 2);*/
     //glFlush();
 
-    glutSwapBuffers(); 
+    RenderObj(0, 0, swidth, sheight);
+
+    glutSwapBuffers();
     glutPostRedisplay(); // force reaffichage
 }
+
+/*std::vector<tinyobj::shape_t> shapes;
+std::vector<tinyobj::material_t> materials;
+std::string err;
+*/
+
+
+
 
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
 
 
-    glutInitDisplayMode(GLUT_DOUBLE);
+    glutInitDisplayMode(GLUT_DOUBLE| GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(swidth,sheight);
     glutCreateWindow("Triangle");
 
@@ -222,12 +324,18 @@ int main(int argc, char** argv)
     printf("%d %d test\n", dim[0], dim[1]);
     glEnable(GL_CULL_FACE);
     glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_DEPTH_TEST);  // Enable depth testing
 
     if(!Initialise())
         return 1;
 
+    if(!loadOBJ("assets/monkey.obj", vertices, normals, textures))
+        goto end;
 
     glutMainLoop();
 
+    end:
     Terminate();
-return 0; }
+    return 0;
+
+}

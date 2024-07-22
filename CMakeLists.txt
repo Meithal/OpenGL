@@ -88,3 +88,26 @@ add_custom_target(copy-runtime-shaders ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/initiation/shaders ${CMAKE_BINARY_DIR}/shaders
         )
 ADD_DEPENDENCIES ( initiation copy-runtime-shaders )
+
+add_executable(load_obj
+        load_obj/main.cpp
+        initiation/common/GLShader.cpp
+        initiation/common/GLShader.hpp
+)
+
+target_include_directories(load_obj PRIVATE load_obj/tinyobjloader)
+
+
+if (APPLE)
+    target_link_libraries(load_obj OpenGL::GL GLUT::GLUT)
+else()
+    target_link_libraries(load_obj OpenGL::GL GLUT::GLUT GLEW::GLEW)
+endif (APPLE)
+
+ADD_DEPENDENCIES ( load_obj copy-runtime-shaders )
+
+add_custom_target(copy-runtime-assets ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/load_obj/assets ${CMAKE_BINARY_DIR}/assets
+)
+
+ADD_DEPENDENCIES ( load_obj copy-runtime-assets )

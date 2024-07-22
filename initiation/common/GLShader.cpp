@@ -1,6 +1,6 @@
 
 //#include "stdafx.h"
-#include "../common/GLShader.hpp"
+#include "GLShader.hpp"
 //#define GLEW_STATIC
 #ifndef __APPLE__
 #include "GL/glew.h"
