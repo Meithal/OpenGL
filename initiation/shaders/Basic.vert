@@ -12,7 +12,7 @@ uniform float u_time;
 
 void main(void) {
 
-    gl_Position = vec4(a_position, 1.0);
+    gl_Position =  vec4(a_position, 1.0);
     v_normal =  a_normal;
 
     return;
