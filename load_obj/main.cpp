@@ -256,19 +256,28 @@ void RenderObj(int x, int y,  int w, int h)
     int basicProgram = g_BasicShader.GetProgram();
     glUseProgram(basicProgram);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices.data());
+    const int POSITION = glGetAttribLocation(basicProgram, "a_position");
+    //const int POSITION = glGetAttribLocation(basicProgram, "a_position");
 
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer(GL_FLOAT, 0, normals.data());
+    //glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableVertexAttribArray(POSITION);
+    glVertexAttribPointer(POSITION, 3, GL_FLOAT, GL_FALSE, 0 * sizeof(GLfloat), vertices.data());
+
+    //glEnableClientState(GL_NORMAL_ARRAY);
+
+    const int NORMAL = glGetAttribLocation(basicProgram, "a_normal");
+    glEnableVertexAttribArray(NORMAL);
+
+    glVertexAttribPointer(NORMAL, 3, GL_FLOAT, GL_FALSE, 0 * sizeof(GLfloat), normals.data());
+
+    //glVertexAttribPointer(GL_FLOAT, 0, normals.data());
 
     glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
+    //glDisableClientState(GL_VERTEX_ARRAY);
+    //glDisableClientState(GL_NORMAL_ARRAY);
     glUseProgram(0);
 
-    glutSwapBuffers();
 }
 
 // la ‘callback’ executee par glutDisplayFunc()
@@ -323,7 +332,7 @@ int main(int argc, char** argv)
 
     printf("%d %d test\n", dim[0], dim[1]);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_SCISSOR_TEST);
+    //glEnable(GL_SCISSOR_TEST);
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
 
     if(!Initialise())
