@@ -6,7 +6,7 @@ varying vec3 v_normal;
 
 void main(void) {
 
-    vec3 lightDir = normalize(vec3(0.0, 0.0, 1.0));
+    vec3 lightDir = normalize(vec3(-1.0, .0, .0));
     float diff = max(dot(normalize(v_normal), lightDir), 0.0);
     vec3 diffuse = diff * vec3(1.0, 1.0, 1.0);
 

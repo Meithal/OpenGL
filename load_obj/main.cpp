@@ -12,6 +12,7 @@
 #include "../initiation/common/GLShader.hpp"
 
 #define TINYOBJLOADER_IMPLEMENTATION
+#define TINYOBJLOADER_USE_MAPBOX_EARCUT
 #include "tinyobjloader/tiny_obj_loader.h"
 
 #include <vector>
@@ -29,6 +30,8 @@ bool loadOBJ(const std::string& path, std::vector<float>& vertices, std::vector<
     std::string inputfile = "assets/monkey.obj";
     tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "./assets"; // Path to material files
+    reader_config.triangulate = true;
+
 
     tinyobj::ObjReader reader;
 
@@ -36,7 +39,7 @@ bool loadOBJ(const std::string& path, std::vector<float>& vertices, std::vector<
         if (!reader.Error().empty()) {
             std::cerr << "TinyObjReader: " << reader.Error();
         }
-        exit(1);
+        return false;
     }
     //tinyobj::ObjReader::ParseFromFile("assets/monkey.obj", )
     /*if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str())) {
@@ -249,15 +252,70 @@ std::vector<GLfloat> normals;
 std::vector<GLfloat> textures;
 std::string err;
 
-void RenderObj(int x, int y,  int w, int h)
+static float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
+
+void RenderObjOgl1(int x, int y,  int w, int h)
 {
+    GLfloat l_pos0[] = { 1.0,1.0,1.0,0.0 };
+    GLfloat l_ambient0[] = { 1.0,1.0,1.0,0.5 };
+    GLfloat shinines[] = { 50.0 };
+    GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    glClearColor(1.f, 0.f, 1.f, 1.f);
+
+    glViewport(x, y, w, h);
+    glScissor(x, y, w, h);
+    glEnable(GL_SCISSOR_TEST);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90.0, static_cast<double>(w) / static_cast<double>(h), 0.1, 100.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(1.0, 0.0, -4.0,  // Camera position (eye)
+              0.0, 0.0, -5.0,  // Look-at point (center)
+              0.0, 1.0, 0.0);  // Up vector
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    glLightfv(GL_LIGHT0, GL_POSITION, l_pos0);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, l_ambient0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, l_ambient0);
+    //glMaterialfv(GL_FRONT,GL_SPECULAR,blanc);
+    //glMaterialfv(GL_FRONT,GL_SHININESS,shinines);
+
+    glBegin(GL_TRIANGLES);
+    for(int i = 0; i < vertices.size(); i+=3) {
+        glVertex3f(vertices[i], vertices[i+1], vertices[i+2]);
+    }
+
+    glEnd();
+
+    glDisable(GL_LIGHT0);
+    glDisable(GL_LIGHTING);
+}
+
+// obj 3 glGetAttribLocation
+void RenderObjAttrib(int x, int y,  int w, int h)
+{
+    glViewport(x, y, w, h);
+    glScissor(x, y, w, h);
+    glLoadIdentity();
+    gluPerspective(90.0, 4.0/3.0, 0.1, 100.0);
+    gluLookAt(1, 0.0, -4.0,   // Camera position (eye)
+              0.0, 0.0, -5.0,   // Look-at point (center)
+              0.0, 1, 0);  // Up vector
+
+    glClearColor(1.f, 1.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     int basicProgram = g_BasicShader.GetProgram();
     glUseProgram(basicProgram);
 
     const int POSITION = glGetAttribLocation(basicProgram, "a_position");
-    //const int POSITION = glGetAttribLocation(basicProgram, "a_position");
 
     //glEnableClientState(GL_VERTEX_ARRAY);
     glEnableVertexAttribArray(POSITION);
@@ -272,7 +330,7 @@ void RenderObj(int x, int y,  int w, int h)
 
     //glVertexAttribPointer(GL_FLOAT, 0, normals.data());
 
-    glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
+    glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3.);
 
     //glDisableClientState(GL_VERTEX_ARRAY);
     //glDisableClientState(GL_NORMAL_ARRAY);
@@ -290,7 +348,8 @@ void Display(/*int x, int y,  int w, int h*/)
     RenderTriStrip(swidth / 2, 0, swidth / 2, sheight / 2);*/
     //glFlush();
 
-    RenderObj(0, 0, swidth, sheight);
+    RenderObjOgl1(0, sheight / 2, swidth / 2, sheight / 2);
+    RenderObjAttrib(0, 0, swidth / 2, sheight / 2);
 
     glutSwapBuffers();
     glutPostRedisplay(); // force reaffichage
@@ -332,7 +391,7 @@ int main(int argc, char** argv)
 
     printf("%d %d test\n", dim[0], dim[1]);
     glEnable(GL_CULL_FACE);
-    //glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_SCISSOR_TEST);
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
 
     if(!Initialise())
