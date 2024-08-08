@@ -334,7 +334,7 @@ void RenderObjAttrib(int x, int y,  int w, int h)
 
     //glDisableClientState(GL_VERTEX_ARRAY);
     //glDisableClientState(GL_NORMAL_ARRAY);
-    glUseProgram(0);
+    //glUseProgram(0);
 
 }
 
